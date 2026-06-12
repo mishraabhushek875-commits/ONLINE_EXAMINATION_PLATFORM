@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                          /* Modern JS version */
+    "module": "commonjs",                        /* Node.js ke liye standard */
+    "lib": ["es2022"],                           /* JS features libraries */
+    "strict": true,                              /* Strict type-checking enable karega */
+    "esModuleInterop": true,                      /* CommonJS aur ES Modules mein smooth work ke liye */
+    "skipLibCheck": true,                        /* Type files checking skip karke build fast karega */
+    "forceConsistentCasingInFileNames": true,    /* File names ke casing ka dhyan rakhega */
+    "outDir": "./dist",                          /* Compile hone ke baad JS files yahan jayengi */
+    "rootDir": "./src"                           /* Hamara saara TypeScript code is folder mein rahega */
+  },
+  "include": ["src/**/*"]
+}
