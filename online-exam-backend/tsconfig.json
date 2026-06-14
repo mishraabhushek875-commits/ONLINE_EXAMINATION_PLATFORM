@@ -8,7 +8,8 @@
     "skipLibCheck": true,                        /* Type files checking skip karke build fast karega */
     "forceConsistentCasingInFileNames": true,    /* File names ke casing ka dhyan rakhega */
     "outDir": "./dist",                          /* Compile hone ke baad JS files yahan jayengi */
-    "rootDir": "./src"                           /* Hamara saara TypeScript code is folder mein rahega */
+    "rootDir": "./src"  ,                         /* Hamara saara TypeScript code is folder mein rahega */
+    "types": ["node"]
   },
   "include": ["src/**/*"]
 }
