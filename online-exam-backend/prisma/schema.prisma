@@ -16,27 +16,76 @@ enum UserStatus {
   inactive
 }
 
+enum QuestionCat {
+  Database
+  Node
+  Nextjs
+  Reactjs
+}
+
 model User {
-  id         Int        @id @default(autoincrement())
-  full_name  String     @db.VarChar(100)
-  email      String     @unique @db.VarChar(100)
-  phone      String     @db.VarChar(15)
-  password   String     @db.VarChar(255)
-  role       UserRole   @default(student)
-  status     UserStatus @default(active)
-  refreshToken String?  @db.Text
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  id           Int        @id @default(autoincrement())
+  full_name    String     @db.VarChar(100)
+  email        String     @unique @db.VarChar(100)
+  phone        String     @db.VarChar(15)
+  password     String     @db.VarChar(255)
+  role         UserRole   @default(student)
+  status       UserStatus @default(active)
+  refreshToken String?    @db.Text
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
 
   @@map("users")
 }
 
 model Otp {
-  id    Int   @id @default(autoincrement())
-  email String
-  otp   Int
+  id        Int      @id @default(autoincrement())
+  email     String
+  otp       Int
   expireAt  DateTime
-  createdAt   DateTime    @default(now())
+  createdAt DateTime @default(now())
 
   @@map("otps")
+}
+
+model Question {
+  id            Int                    @id @default(autoincrement())
+  text          String
+  category      QuestionCat            @default(Node)
+  options       Option[]
+  answer        Answer[]
+  questionBanks QuestionBankQuestion[]
+}
+
+model QuestionBank {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now())
+
+  question QuestionBankQuestion[]
+}
+
+model QuestionBankQuestion {
+  id             Int @id @default(autoincrement())
+  questionId     Int
+  questionBankId Int
+
+  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionBank QuestionBank @relation(fields: [questionBankId], references: [id], onDelete: Cascade)
+}
+
+model Option {
+  id         Int      @id @default(autoincrement())
+  text       String
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers    Answer[]
+}
+
+model Answer {
+  id         Int      @id @default(autoincrement())
+  optionId   Int
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option     Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
 }

@@ -2,14 +2,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
+import questionRoutes from "./routes/questionsRoute";
 
 dotenv.config();
 
 const app = express();
 
 // Middlewares
-app.use(cors()); 
-app.use(express.json()); 
+app.use(cors());
+app.use(express.json());
 
 app.use((req, res, next) => {
   console.log(`🔥 ${req.method} ${req.url}`);
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 // App Routes attach kar rahe hain
 app.use("/api/auth", authRoutes);
+app.use("/api/questions", questionRoutes);
 
 // Agar koi galat route hit kare toh handle karne ke liye fallback catch
 app.use((req, res) => {
