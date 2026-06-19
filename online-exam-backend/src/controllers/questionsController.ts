@@ -1,4 +1,3 @@
-import { Question } from "./../../node_modules/.prisma/client/index.d";
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { QuestionCat } from "@prisma/client";

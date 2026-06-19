@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import questionRoutes from "./routes/questionsRoute";
+import bankRoutes from "./routes/bankController";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 // App Routes attach kar rahe hain
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/banks", bankRoutes);
 
 // Agar koi galat route hit kare toh handle karne ke liye fallback catch
 app.use((req, res) => {
