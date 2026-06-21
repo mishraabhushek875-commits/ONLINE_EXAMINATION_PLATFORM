@@ -3,13 +3,14 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
 const connectionString = process.env.DATABASE_URL || "";
-console.log("Connection String:", connectionString);
 const adapter = new PrismaPg({ connectionString });
 
-const prisma = new PrismaClient({
+const baseClient = new PrismaClient({
   adapter,
   log: ["query", "error", "warn"],
-}).$extends({
+});
+
+const prisma = baseClient.$extends({
   query: {
     user: {
       async create({ args, query }) {
@@ -20,6 +21,6 @@ const prisma = new PrismaClient({
       },
     },
   },
-});
+}) as unknown as PrismaClient;
 
 export default prisma;
