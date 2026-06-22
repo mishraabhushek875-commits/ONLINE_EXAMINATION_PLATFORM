@@ -6,6 +6,7 @@ import questionRoutes from "./routes/questionsRoute";
 import examRoutes from "./routes/examRoutes";
 import assignmentRoutes from "./routes/assignedRoutes";
 import bankRoutes from "./routes/bankController";
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ app.use("/api/banks", bankRoutes);
 // existing routes ke neeche
 app.use("/api/exams", examRoutes);
 app.use("/api/admin/exams", assignmentRoutes);
+app.use("/api/admin/students", adminRoutes);
+
 // Agar koi galat route hit kare toh handle karne ke liye fallback catch
 app.use((req, res) => {
   res.status(404).json({

@@ -10,8 +10,6 @@ const REFRESH_SECRET = process.env.REFRESH_SECRET || "refresh_fallback";
 
 export const authController = {
   async register(req: Request, res: Response): Promise<void> {
-    console.log("✅ Register function hit hua!"); // ← sabse pehle
-    console.log("Body:", req.body);
     try {
       const { full_name, email, phone, password, role } = req.body;
 
@@ -28,20 +26,25 @@ export const authController = {
         return;
       }
 
-      await prisma.user.create({
-        data: {
-          full_name,
-          email,
-          phone,
-          password,
-          role: role || "student",
-        },
+      let otp!: number;
+      await prisma.$transaction(async (tx) => {
+        await tx.user.create({
+          data: {
+            full_name,
+            email,
+            phone,
+            password,
+            role: role || "student",
+          },
+        });
+
+        otp = generateOTP();
+        await saveOTP(email, otp);
       });
 
-      const otp = generateOTP();
-      await saveOTP(email, otp);
       await sendOtpEmail(email, otp);
       res.status(200).json({ message: "OTP sent!" });
+
       return;
     } catch (error: any) {
       console.error("Register Error:", JSON.stringify(error, null, 2));
