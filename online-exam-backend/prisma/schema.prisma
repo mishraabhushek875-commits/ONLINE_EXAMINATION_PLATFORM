@@ -1,9 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
+  
 }
 
 enum UserRole {
@@ -23,6 +25,14 @@ enum QuestionCat {
   Reactjs
 }
 
+enum AttemptStatus {
+  in_progress
+  submitted
+  expired
+}
+
+// ─── Existing Models ──────────────────────────────
+
 model User {
   id           Int        @id @default(autoincrement())
   full_name    String     @db.VarChar(100)
@@ -34,6 +44,11 @@ model User {
   refreshToken String?    @db.Text
   created_at   DateTime   @default(now())
   updated_at   DateTime   @updatedAt
+
+  // New relations
+  assignedExams    ExamAssignment[] @relation("StudentAssignments")
+  attempts         ExamAttempt[]
+  createdExams     Exam[]           @relation("ExamCreator")
 
   @@map("users")
 }
@@ -55,6 +70,7 @@ model Question {
   options       Option[]
   answer        Answer[]
   questionBanks QuestionBankQuestion[]
+  studentAnswers StudentAnswer[]
 }
 
 model QuestionBank {
@@ -62,7 +78,8 @@ model QuestionBank {
   title     String
   createdAt DateTime @default(now())
 
-  question QuestionBankQuestion[]
+  question  QuestionBankQuestion[]
+  exams     Exam[]
 }
 
 model QuestionBankQuestion {
@@ -80,6 +97,7 @@ model Option {
   questionId Int
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   answers    Answer[]
+  studentAnswers StudentAnswer[]
 }
 
 model Answer {
@@ -88,4 +106,71 @@ model Answer {
   questionId Int
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   option     Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+}
+
+// ─── New Models ───────────────────────────────────
+
+model Exam {
+  id             Int      @id @default(autoincrement())
+  title          String   @db.VarChar(200)
+  description    String?  @db.Text
+  duration       Int      // minutes mein — e.g. 60
+  passingMarks   Int      // e.g. 40 (out of 100)
+  totalMarks     Int      // e.g. 100
+  createdById    Int
+  questionBankId Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  createdBy    User           @relation("ExamCreator", fields: [createdById], references: [id])
+  questionBank QuestionBank   @relation(fields: [questionBankId], references: [id])
+  assignments  ExamAssignment[]
+  attempts     ExamAttempt[]
+
+  @@map("exams")
+}
+
+model ExamAssignment {
+  id          Int      @id @default(autoincrement())
+  examId      Int
+  studentId   Int
+  assignedAt  DateTime @default(now())
+
+  exam    Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student User @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+
+  // Ek student ko same exam ek baar hi assign ho
+  @@unique([examId, studentId])
+  @@map("exam_assignments")
+}
+
+model ExamAttempt {
+  id          Int           @id @default(autoincrement())
+  examId      Int
+  studentId   Int
+  status      AttemptStatus @default(in_progress)
+  score       Int?          // submit hone ke baad fill hoga
+  startedAt   DateTime      @default(now())
+  submittedAt DateTime?
+
+  exam           Exam            @relation(fields: [examId], references: [id])
+  student        User            @relation(fields: [studentId], references: [id])
+  studentAnswers StudentAnswer[]
+
+  @@map("exam_attempts")
+}
+
+model StudentAnswer {
+  id          Int  @id @default(autoincrement())
+  attemptId   Int
+  questionId  Int
+  optionId    Int  // student ne jo option choose kiya
+
+  attempt  ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+  option   Option      @relation(fields: [optionId], references: [id])
+
+  // Ek attempt mein ek question ka ek hi answer
+  @@unique([attemptId, questionId])
+  @@map("student_answers")
 }

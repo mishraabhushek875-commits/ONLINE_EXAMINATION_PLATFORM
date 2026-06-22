@@ -6,13 +6,17 @@ import {
   getBankFromId,
   updateBank,
 } from "../controllers/bankController";
+import auth from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/", createBank);
-router.get("/:id", getBankFromId);
-router.get("/", getAllBanks);
-router.patch("/:id", updateBank);
-router.delete("/:id", deleteBank);
+// 🔴 Admin only
+router.post("/", auth.authenticate, auth.adminMiddleware, createBank);
+router.patch("/:id", auth.authenticate, auth.adminMiddleware, updateBank);
+router.delete("/:id", auth.authenticate, auth.adminMiddleware, deleteBank);
+
+// 🟢 Authenticated users
+router.get("/", auth.authenticate, getAllBanks);
+router.get("/:id", auth.authenticate, getBankFromId);
 
 export default router;
