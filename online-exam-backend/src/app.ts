@@ -7,6 +7,7 @@ import examRoutes from "./routes/examRoutes";
 import assignmentRoutes from "./routes/assignedRoutes";
 import bankRoutes from "./routes/bankController";
 import adminRoutes from "./routes/adminRoutes";
+import resultRoutes from "./routes/resultRoutes";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/banks", bankRoutes);
+app.use("/api/results", resultRoutes);
 
 // existing routes ke neeche
 app.use("/api/exams", examRoutes);
