@@ -1,9 +1,9 @@
 import React from "react";
-import user from "../../../assets/user.png";
-import notice from "../../../assets/notice.png";
-import graph from "../../../assets/graph.png";
-import badge from "../../../assets/badge.png";
-import RegisterForm from "../components/RegisterForm";
+import user from "../../assets/user.png";
+import notice from "../../assets/notice.png";
+import graph from "../../assets/graph.png";
+import badge from "../../assets/badge.png";
+import RegisterForm from "../../Components/RegisterForm";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 
