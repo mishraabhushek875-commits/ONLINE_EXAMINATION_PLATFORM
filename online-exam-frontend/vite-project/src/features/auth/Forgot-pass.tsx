@@ -1,10 +1,9 @@
 import React from "react";
-import mail from "../../../assets/mail.png";
-import { MdLockPerson } from "react-icons/md";
+import { MdMailLock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
-const resetPass = () => {
+const forgotPass = () => {
   const navigate = useNavigate();
   return (
     <div className="min-w-screen min-h-screen flex items-center justify-center">
@@ -15,10 +14,10 @@ const resetPass = () => {
       <div className="absolute top-20 right-[600px] h-[250px] w-[250px] z-11 rounded-full bg-purple-500/15 blur-[60px]" />
       <div className="p-4 flex flex-col items-center justify-center bg-white z-10 gap-5 shadow-2xl">
         <div className="p-4 bg-purple-50 rounded-full mb-4">
-          <MdLockPerson className="text-purple-500" size={70} />
+          <MdMailLock className="text-purple-500" size={70} />
         </div>
         <h1 className="text-2xl font-bold">
-          Verify <span className="text-blue-500">OTP</span>?
+          Forgot <span className="text-blue-500">Password</span>?
         </h1>
         <p className="max-w-sm text-center font-semibold text-gray-500">
           <span className="text-green-500">No worries!!</span> Enter your{" "}
@@ -30,7 +29,7 @@ const resetPass = () => {
         <form className="w-full">
           <label className="text-gray-500 font-semibold">Email</label>
           <div className="w-full border-2 border-gray-400 px-4 py-2 rounded-lg flex gap-3 items-center ">
-            <MdLockPerson size={20} className="text-gray-500" />
+            <MdMailLock size={20} className="text-gray-500" />
             <input
               type="text"
               placeholder="Enter otp..."
@@ -67,4 +66,4 @@ const resetPass = () => {
   );
 };
 
-export default resetPass;
+export default forgotPass;

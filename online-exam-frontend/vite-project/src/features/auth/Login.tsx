@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaRegEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
-import login from "../../../assets/login.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
