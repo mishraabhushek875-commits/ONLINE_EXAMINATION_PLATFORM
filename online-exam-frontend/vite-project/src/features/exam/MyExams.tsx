@@ -1,3 +1,6 @@
+// src/features/exam/MyExams.tsx
+// Click on exam card → /my-exams/:id (ExamDetail)
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -8,10 +11,11 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaHourglassHalf,
+  FaArrowRight,
 } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md";
 import api from "../../services/api";
-import type { AssignedExam, DashboardData } from "../../types/exam.types";
+import type { DashboardData, AssignedExam } from "../../types/exam.types";
 
 const MyExams = () => {
   const navigate = useNavigate();
@@ -25,21 +29,6 @@ const MyExams = () => {
   });
 
   const exams: AssignedExam[] = data?.assignedExams ?? [];
-
-  const handleAction = (assignment: AssignedExam) => {
-    if (assignment.attemptStatus === "submitted") {
-      navigate(`/result/${assignment.attemptId}`);
-    } else {
-      navigate(`/student/exam/${assignment.exam.id}/rules`, {
-        state: {
-          examTitle: assignment.exam.title,
-          duration: assignment.exam.duration,
-          totalMarks: assignment.exam.totalMarks,
-          passingMarks: assignment.exam.passingMarks,
-        },
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -64,7 +53,6 @@ const MyExams = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-50 p-8">
-      {/* Background blobs - same palette as Register page */}
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
       <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
       <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
@@ -72,7 +60,6 @@ const MyExams = () => {
       <div className="absolute top-1/2 left-[8%] h-[220px] w-[220px] rounded-full bg-purple-500/15 blur-[110px]" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
-        {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-gray-800">
             My{" "}
@@ -81,11 +68,11 @@ const MyExams = () => {
             </span>
           </h1>
           <p className="mt-2 font-medium text-gray-500">
-            View all your assigned and completed exams.
+            View all your assigned and completed exams. Click on any exam to see
+            details.
           </p>
         </div>
 
-        {/* Empty State */}
         {exams.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-gray-300 bg-white/80 p-16 text-center shadow-sm backdrop-blur-sm">
             <div className="mx-auto mb-4 w-fit rounded-full border-2 border-purple-200 bg-purple-50 p-5">
@@ -134,9 +121,11 @@ const MyExams = () => {
               return (
                 <div
                   key={assignment.assignmentId}
-                  className="group relative rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  // ✅ Click karo → ExamDetail page pe jao
+                  onClick={() => navigate(`/my-exams/${exam.id}`)}
+                  className="group relative cursor-pointer rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
-                  {/* Status Badge + icon chip */}
+                  {/* Status Badge */}
                   <div className="mb-4 flex items-center justify-between">
                     <span
                       className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${status.cls}`}
@@ -193,16 +182,14 @@ const MyExams = () => {
                     )}
                   </div>
 
-                  {/* Action Button */}
-                  <button
-                    onClick={() => !isExpired && handleAction(assignment)}
-                    disabled={isExpired}
-                    className={`mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 font-semibold transition ${
+                  {/* See Details hint */}
+                  <div
+                    className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold transition ${
                       isExpired
-                        ? "cursor-not-allowed bg-gray-100 text-gray-400"
+                        ? "bg-gray-100 text-gray-400"
                         : isSubmitted
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : "bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 text-white hover:scale-[1.02] hover:shadow-md"
+                          ? "bg-green-500 text-white group-hover:bg-green-600"
+                          : "bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 text-white group-hover:scale-[1.02] group-hover:shadow-md"
                     }`}
                   >
                     {isSubmitted ? (
@@ -211,20 +198,16 @@ const MyExams = () => {
                       </>
                     ) : (
                       <>
-                        <FaPlay size={12} />
-                        {attemptStatus === "in_progress"
-                          ? "Resume Exam"
-                          : "Start Exam"}
+                        <FaArrowRight size={13} /> See Details
                       </>
                     )}
-                  </button>
+                  </div>
                 </div>
               );
             })}
           </div>
         )}
 
-        {/* Footer */}
         <footer className="mt-16 text-center text-sm text-gray-500">
           © {new Date().getFullYear()}{" "}
           <span className="bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text font-semibold text-transparent">

@@ -34,7 +34,7 @@ export const authController = {
             full_name,
             email,
             phone,
-            password,
+            password: hashedPassword,
             role: role || "student",
           },
         });
@@ -45,7 +45,6 @@ export const authController = {
 
       await sendOtpEmail(email, otp);
       res.status(200).json({ message: "OTP sent!" });
-
       return;
     } catch (error: any) {
       console.error("Register Error:", JSON.stringify(error, null, 2));
@@ -119,23 +118,20 @@ export const authController = {
         return;
       }
 
-      const user = await prisma.user.findUnique({
-        where: {
-          email,
-        },
-      });
+      const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
         res.status(400).json({ message: "User not found" });
+        return;
       }
 
       const accessToken = jwt.sign(
-        { id: user?.id, role: user?.role },
+        { id: user.id, role: user.role },
         JWT_SECRET,
         { expiresIn: "15m" },
       );
 
       const refreshToken = jwt.sign(
-        { id: user?.id, role: user?.role },
+        { id: user.id, role: user.role },
         REFRESH_SECRET,
         { expiresIn: "7d" },
       );
@@ -149,6 +145,7 @@ export const authController = {
           refreshToken: true,
         },
       });
+
       res.status(200).json({
         message: "User Loggined successfully",
         data: accessToken,
@@ -169,13 +166,32 @@ export const authController = {
         res.status(400).json({ message: "RefreshToken required" });
         return;
       }
+
+      // ✅ REFRESH_SECRET se verify karo
       const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as {
         id: number;
+        role: string;
       };
 
-      const accessToken = jwt.sign({ id: decoded.id }, REFRESH_SECRET, {
-        expiresIn: "15m",
+      // ✅ DB check — token revoked toh nahi?
+      const user = await prisma.user.findFirst({
+        where: { id: decoded.id, refreshToken },
+        select: { id: true, role: true },
       });
+
+      if (!user) {
+        res.status(401).json({ message: "Invalid or revoked refresh token!" });
+        return;
+      }
+
+      // ✅ JWT_SECRET se sign karo — middleware yahi verify karta hai
+      // ✅ role include karo — middleware ko chahiye
+      const accessToken = jwt.sign(
+        { id: user.id, role: user.role },
+        JWT_SECRET,
+        { expiresIn: "15m" },
+      );
+
       res.status(200).json({ accessToken });
     } catch (error) {
       res.status(401).json({ message: "Invalid or expired refresh token!" });
@@ -190,10 +206,7 @@ export const authController = {
         return;
       }
       const exists = await prisma.otp.findFirst({
-        where: {
-          email,
-          otp: Number(otp),
-        },
+        where: { email, otp: Number(otp) },
       });
       if (!exists) {
         res.status(400).json({ message: "No Otp found" });
@@ -206,11 +219,8 @@ export const authController = {
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-
       const updated = await prisma.user.update({
-        where: {
-          email,
-        },
+        where: { email },
         data: { password: hashedPassword },
       });
       console.log("Updated password hash:", updated.password);
@@ -235,11 +245,7 @@ export const authController = {
         res.status(400).json({ message: "Email required" });
         return;
       }
-      const user = await prisma.user.findUnique({
-        where: {
-          email,
-        },
-      });
+      const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
         res.status(400).json({ message: "User not found" });
         return;
