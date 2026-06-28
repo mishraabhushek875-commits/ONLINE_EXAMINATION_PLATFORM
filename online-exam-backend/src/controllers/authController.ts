@@ -28,6 +28,7 @@ export const authController = {
 
       let otp!: number;
       await prisma.$transaction(async (tx) => {
+        const hashedPassword = await bcrypt.hash(password, 10);
         await tx.user.create({
           data: {
             full_name,

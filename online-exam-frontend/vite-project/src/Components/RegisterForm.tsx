@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaPhone, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { useRegister } from "../hooks/useAuth";
 
 interface FormData {
   fullName: string;
@@ -20,6 +22,9 @@ interface FormErrors {
 }
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
+  const registerMutation = useRegister();
+
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
@@ -35,8 +40,7 @@ export default function RegisterForm() {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.fullName.trim())
-      newErrors.fullName = "Full name is required";
+    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -77,8 +81,19 @@ export default function RegisterForm() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form submitted:", formData);
-      // apna API call yahan karo
+      registerMutation.mutate(
+        {
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        },
+        {
+          onSuccess: () => {
+            navigate("/verify", { state: { email: formData.email } });
+          },
+        },
+      );
     }
   };
 
@@ -92,7 +107,6 @@ export default function RegisterForm() {
   return (
     <div className="mt-4 w-full">
       <div className="grid grid-cols-2 gap-4">
-
         {/* Full Name */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Full Name</label>
@@ -213,7 +227,6 @@ export default function RegisterForm() {
             Sign Up
           </button>
         </div>
-
       </div>
     </div>
   );

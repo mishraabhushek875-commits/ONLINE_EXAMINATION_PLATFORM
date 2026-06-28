@@ -1,37 +1,54 @@
-import { Route, Routes } from "react-router-dom";
-
-import DashboardLayout from "./layout/DashboardLayout";
-
+import { Route, Routes, Outlet } from "react-router-dom";
+import Navbar from "./Components/Navbar";
 import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
 import ForgotPassword from "./features/auth/Forgot-pass";
 import RestPassword from "./features/auth/Reset-pass";
-import VerifyOtp from "./features/auth/VerifyOtp";
 import StudentDashboard from "./features/dashboard/StudentDashboard";
-import MyExams from "./features/exam/MyExams";
-import ExamDetail from "./features/exam/ExamDetail";
+import ExamRules from "./features/exam/ExamRules";
+import ExamPage from "./features/exam/ExamPage";
+import VerifyOtp from "./features/auth/VerifyOtp";
 import Results from "./features/result/Result";
 import ResultDetail from "./features/result/ResultDetail";
+import MyExams from "./features/exam/MyExams";
+import DashboardLayout from "./layout/DashboardLayout";
+import ProtectedRoute from "./Components/ProtectRoute";
+import PublicRoute from "./Components/PublicRoute";
+
+const AuthLayout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+  </>
+);
 
 function App() {
   return (
     <Routes>
-      {/* Dashboard Routes */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/" element={<StudentDashboard />} />
-        {/* Future dashboard pages */}
-        <Route path="/my-exams" element={<MyExams />} />
-        <Route path="/my-exams/:id" element={<ExamDetail />} />
-        <Route path="/results" element={<Results />} />
-        <Route path="/result/:id" element={<ResultDetail />} />
+      {/* No layout — full screen exam */}
+      <Route path="/student/exam/:examId/attempt" element={<ExamPage />} />
+
+      {/* Public only — logged in hai toh / pe redirect */}
+      <Route element={<PublicRoute />}>
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<RestPassword />} />
+          <Route path="/verify" element={<VerifyOtp />} />
+        </Route>
       </Route>
 
-      {/* Auth Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<RestPassword />} />
-      <Route path="/verify" element={<VerifyOtp />} />
+      {/* Protected — login nahi hai toh /login pe redirect */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/" element={<StudentDashboard />} />
+          <Route path="/my-exams" element={<MyExams />} />
+          <Route path="/student/exam/:examId/rules" element={<ExamRules />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/result/:id" element={<ResultDetail />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }

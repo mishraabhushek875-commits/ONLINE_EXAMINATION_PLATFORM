@@ -37,22 +37,18 @@ export const assignExamToStudent = async (req: Request, res: Response) => {
       },
     });
 
-    return res
-      .status(201)
-      .json({
-        success: true,
-        message: "Exam assigned successfully",
-        data: assignment,
-      });
+    return res.status(201).json({
+      success: true,
+      message: "Exam assigned successfully",
+      data: assignment,
+    });
   } catch (error: any) {
     // Duplicate assign
     if (error.code === "P2002") {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Exam already assigned to this student",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Exam already assigned to this student",
+      });
     }
     console.error(error);
     return res
@@ -190,6 +186,38 @@ export const removeAssignment = async (req: Request, res: Response) => {
     return res
       .status(200)
       .json({ success: true, message: "Assignment removed successfully" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+// ─── Get My Assigned Exams (Student's own) ─────
+export const getMyAssignedExams = async (req: Request, res: Response) => {
+  try {
+    const studentId = req.user!.id; // JWT se aaya, param se nahi
+
+    const assignments = await prisma.examAssignment.findMany({
+      where: { studentId },
+      include: {
+        exam: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            duration: true,
+            passingMarks: true,
+            totalMarks: true,
+          },
+        },
+      },
+    });
+
+    const exams = assignments.map((a) => a.exam);
+
+    return res.status(200).json({ success: true, data: exams });
   } catch (error) {
     console.error(error);
     return res
