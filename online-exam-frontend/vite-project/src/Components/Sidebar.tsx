@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaHome, FaClipboardList, FaChartBar } from "react-icons/fa";
 import { FaRightLong } from "react-icons/fa6";
+import { useAuthStore } from "../store/authStore"; // apne actual path se adjust karo
 
 const nav = [
   {
@@ -24,6 +25,15 @@ const nav = [
 ];
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem("refreshToken");
+    navigate("/login");
+  };
+
   return (
     <aside className="w-64 bg-white border-r border-gray-200 p-5 flex flex-col justify-between">
       <div className="space-y-3">
@@ -72,8 +82,11 @@ const Sidebar = () => {
         })}
         <div></div>
       </div>
-      <div className=" rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2 px-4 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 cursor-pointe w-full flex items-center justify-between cursor-pointer">
-        <button type="submit">Log Out</button>
+      <div
+        onClick={handleLogout}
+        className=" rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2 px-4 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 cursor-pointer w-full flex items-center justify-between"
+      >
+        <button type="button">Log Out</button>
         <FaRightLong />
       </div>
     </aside>

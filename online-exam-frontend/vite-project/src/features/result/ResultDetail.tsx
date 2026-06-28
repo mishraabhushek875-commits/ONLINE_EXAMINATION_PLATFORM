@@ -43,10 +43,10 @@ const ResultDetail = () => {
       setLoading(true);
       setError("");
       try {
-        // 👉 adjust this if you're storing the token somewhere else (e.g. a zustand store)
-        const token = localStorage.getItem("accessToken");
+        const raw = localStorage.getItem("auth-storage");
+        const token = raw ? JSON.parse(raw)?.state?.token : null;
 
-        const res = await fetch(`${API_BASE}/api/results/${id}`, {
+        const res = await fetch(`${API_BASE}/api/student/results/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -72,8 +72,10 @@ const ResultDetail = () => {
   // ─── Loading State ───────────────────────────
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
+        <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
+        <div className="z-10 h-12 w-12 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
       </div>
     );
   }
@@ -81,8 +83,13 @@ const ResultDetail = () => {
   // ─── Error State ──────────────────────────────
   if (error || !result) {
     return (
-      <div className="p-8">
-        <div className="mx-auto max-w-xl rounded-xl border border-red-400 bg-red-100 p-8 text-center">
+      <div className="relative min-h-screen overflow-hidden p-8">
+        <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-red-500/15 blur-[140px]" />
+        <div className="absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-orange-500/15 blur-[130px]" />
+        <div className="relative z-10 mx-auto max-w-xl rounded-2xl border border-red-200 bg-white p-8 text-center shadow-xl">
+          <div className="mx-auto mb-4 w-fit rounded-full border-2 border-red-200 bg-red-50 p-4">
+            <FaTimesCircle className="text-red-400" size={28} />
+          </div>
           <h2 className="text-lg font-semibold text-red-600">
             {error || "Result not found"}
           </h2>
@@ -92,7 +99,7 @@ const ResultDetail = () => {
           </p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-5 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 px-5 py-2 font-semibold text-white transition hover:scale-[1.02]"
+            className="mt-5 cursor-pointer rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 px-5 py-2 font-semibold text-white transition hover:scale-[1.02]"
           >
             Go Back
           </button>
@@ -110,20 +117,29 @@ const ResultDetail = () => {
   const incorrectCount = result.questions.length - correctCount;
 
   return (
-    <div className="p-8">
-      <div className="mx-auto max-w-5xl">
+    <div className="relative min-h-screen overflow-hidden bg-gray-50 p-8">
+      {/* Background blobs - consistent across all pages */}
+      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
+      <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
+      <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
+      <div className="absolute bottom-20 right-1/4 h-[250px] w-[250px] rounded-full bg-red-500/15 blur-[120px]" />
+      <div className="absolute top-1/2 left-[8%] h-[220px] w-[220px] rounded-full bg-purple-500/15 blur-[110px]" />
+
+      <div className="relative z-10 mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-blue-600"
+            className="mb-3 flex cursor-pointer items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-blue-600"
           >
             <FaArrowLeft size={12} /> Back to results
           </button>
 
-          <h1 className="text-3xl font-bold">{result.exam_title}</h1>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {result.exam_title}
+          </h1>
 
-          <p className="mt-1 text-gray-600">
+          <p className="mt-1 text-gray-500">
             Submitted on{" "}
             {result.submitted_at
               ? new Date(result.submitted_at).toLocaleString()
@@ -132,25 +148,22 @@ const ResultDetail = () => {
         </div>
 
         {/* Summary Card */}
-        <div
-          className={`mb-10 rounded-2xl border p-6 ${
-            result.passed
-              ? "border-green-400 bg-green-100"
-              : "border-red-400 bg-red-100"
-          }`}
-        >
-          <h2 className="mb-6 text-center text-xl font-semibold">
-            Result Summary
+        <div className="mb-10 rounded-2xl border border-gray-200 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
+          <h2 className="mb-6 text-center text-xl font-semibold text-gray-800">
+            Result{" "}
+            <span className="bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">
+              Summary
+            </span>
           </h2>
 
-          <div className="flex flex-col gap-6 rounded-xl bg-white p-5 sm:flex-row">
+          <div className="flex flex-col gap-6 rounded-xl bg-gray-50 p-5 sm:flex-row">
             {/* Left Status */}
             <div className="flex flex-col items-center justify-center border-b border-gray-200 pb-6 sm:w-1/3 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-6">
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-2xl border ${
+                className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 ${
                   result.passed
-                    ? "border-green-500 bg-green-100"
-                    : "border-red-500 bg-red-100"
+                    ? "border-green-400 bg-green-50"
+                    : "border-red-400 bg-red-50"
                 }`}
               >
                 {result.passed ? (
@@ -173,10 +186,12 @@ const ResultDetail = () => {
 
             {/* Right Details */}
             <div className="flex-1">
-              <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm sm:grid-cols-3">
                 <div>
                   <p className="text-gray-500">Total Marks</p>
-                  <p className="font-semibold">{result.total_marks}</p>
+                  <p className="font-semibold text-gray-800">
+                    {result.total_marks}
+                  </p>
                 </div>
 
                 <div>
@@ -203,7 +218,9 @@ const ResultDetail = () => {
 
                 <div>
                   <p className="text-gray-500">Questions</p>
-                  <p className="font-semibold">{result.questions.length}</p>
+                  <p className="font-semibold text-gray-800">
+                    {result.questions.length}
+                  </p>
                 </div>
 
                 <div>
@@ -222,16 +239,20 @@ const ResultDetail = () => {
 
         {/* Question-wise Review */}
         <div className="mb-6 flex items-center gap-2">
-          <LuNotepadText className="text-blue-500" size={22} />
-          <h2 className="text-xl font-bold">Question-wise Review</h2>
+          <div className="rounded-full bg-gradient-to-br from-blue-100 via-emerald-50 to-orange-100 p-2">
+            <LuNotepadText className="text-blue-600" size={18} />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800">
+            Question-wise Review
+          </h2>
         </div>
 
         <div className="flex flex-col gap-4">
           {result.questions.map((q, index) => (
             <div
               key={index}
-              className={`rounded-xl border bg-white p-5 ${
-                q.is_correct ? "border-green-300" : "border-red-300"
+              className={`rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md ${
+                q.is_correct ? "border-green-200" : "border-red-200"
               }`}
             >
               <div className="mb-4 flex items-start justify-between gap-4">
@@ -288,6 +309,15 @@ const ResultDetail = () => {
             </div>
           ))}
         </div>
+
+        {/* Footer */}
+        <footer className="mt-16 text-center text-sm text-gray-500">
+          © {new Date().getFullYear()}{" "}
+          <span className="bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text font-semibold text-transparent">
+            Matnite Infotech
+          </span>
+          . All rights reserved.
+        </footer>
       </div>
     </div>
   );

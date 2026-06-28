@@ -1,16 +1,29 @@
 import React, { useRef, useState, useEffect } from "react";
 import { MdLockPerson } from "react-icons/md";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation add
+import { useVerifyOtp } from "../../hooks/useAuth"; // hook import
+import authService from "../../services/auth"; // resend ke liye
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email as string | undefined; // Login se aaya email
+
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
+  const [resending, setResending] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Countdown timer for resend OTP
+  const verifyOtpMutation = useVerifyOtp(); // hook plug-in
+
+  // Email nahi mila (direct URL hit kiya) → login pe bhej do
+  useEffect(() => {
+    if (!email) navigate("/login");
+  }, [email, navigate]);
+
+  // Countdown timer for resend OTP — yeh same hi rahega
   useEffect(() => {
     if (timer === 0) {
       setCanResend(true);
@@ -21,14 +34,10 @@ const VerifyOtp = () => {
   }, [timer]);
 
   const handleChange = (index: number, value: string) => {
-    // Accept only single digit
     if (!/^\d?$/.test(value)) return;
-
     const updated = [...otp];
     updated[index] = value;
     setOtp(updated);
-
-    // Auto-focus next box
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -55,21 +64,33 @@ const VerifyOtp = () => {
     inputRefs.current[Math.min(pasted.length, 5)]?.focus();
   };
 
-  const handleResend = () => {
-    if (!canResend) return;
-    setTimer(30);
-    setCanResend(false);
-    setOtp(Array(6).fill(""));
-    inputRefs.current[0]?.focus();
-    // TODO: Call resend OTP API here
+  const handleResend = async () => {
+    if (!canResend || !email) return;
+    try {
+      setResending(true);
+      await authService.forgotPassword({ email });
+      setTimer(30);
+      setCanResend(false);
+      setOtp(Array(6).fill(""));
+      inputRefs.current[0]?.focus();
+    } catch (err) {
+      console.error("Resend OTP failed:", err);
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
     const enteredOtp = otp.join("");
-    if (enteredOtp.length < 6) return;
-    // TODO: Call verify OTP API here
-    console.log("OTP submitted:", enteredOtp);
+    if (enteredOtp.length < 6 || !email) return;
+
+    verifyOtpMutation.mutate(
+      { email, otp: enteredOtp },
+      {
+        onSuccess: () => navigate("/"),
+      },
+    );
   };
 
   const isComplete = otp.every((d) => d !== "");
@@ -97,10 +118,17 @@ const VerifyOtp = () => {
           </h1>
           <p className="mt-2 text-sm font-semibold text-gray-500 max-w-xs text-center">
             We've sent a <span className="text-orange-500">6-digit code</span>{" "}
-            to your registered email.{" "}
-            <span className="text-green-500">Check your inbox!</span>
+            to <span className="text-green-500">{email}</span>
           </p>
         </div>
+
+        {/* Error message */}
+        {verifyOtpMutation.isError && (
+          <p className="w-full rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600 text-center">
+            {(verifyOtpMutation.error as any)?.response?.data?.message ||
+              "Invalid or expired OTP"}
+          </p>
+        )}
 
         {/* OTP Input Boxes */}
         <form
@@ -133,15 +161,15 @@ const VerifyOtp = () => {
           {/* Verify Button */}
           <button
             type="submit"
-            disabled={!isComplete}
+            disabled={!isComplete || verifyOtpMutation.isPending}
             className={`w-full rounded-xl py-3 font-semibold text-white transition duration-300
               ${
-                isComplete
+                isComplete && !verifyOtpMutation.isPending
                   ? "bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 hover:scale-[1.02] hover:shadow-xl active:scale-95"
                   : "bg-gray-300 cursor-not-allowed"
               }`}
           >
-            Verify OTP
+            {verifyOtpMutation.isPending ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
 
@@ -152,9 +180,10 @@ const VerifyOtp = () => {
               Didn't receive code?{" "}
               <button
                 onClick={handleResend}
-                className="font-semibold bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent cursor-pointer"
+                disabled={resending}
+                className="font-semibold bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent cursor-pointer disabled:opacity-50"
               >
-                Resend OTP
+                {resending ? "Sending..." : "Resend OTP"}
               </button>
             </span>
           ) : (

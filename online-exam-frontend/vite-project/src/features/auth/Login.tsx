@@ -1,10 +1,37 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaRegEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+// src/features/auth/Login.tsx — sirf navigate path fix kiya: /reset-password → /verify
 
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaRegEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import authService from "../../services/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await authService.login({ email, password });
+      navigate("/verify", { state: { email } }); // ✅ /verify pe — VerifyOtp.tsx wala route
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Login failed. Please try again.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -21,7 +48,6 @@ const Login = () => {
             <span className="text-orange-500">Welcome</span> to
           </h2>
           <h1 className="mt-8 text-9xl font-bold wave-text">MAT TEST</h1>
-
           <p className="mt-8 max-w-md text-center text-lg text-gray-600">
             A{" "}
             <span className="text-green-500">
@@ -40,44 +66,46 @@ const Login = () => {
         <div className="flex w-full items-center justify-center p-6 lg:w-1/2 lg:p-20">
           <div className="w-full max-w-md rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
             <h2 className="text-3xl font-bold text-gray-800">Login</h2>
-
             <p className="mt-2 text-gray-500">
               Welcome back! Please login to your account.
             </p>
 
-            <form className="mt-8 space-y-5">
-              {/* Email */}
+            {error && (
+              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div>
                 <label className="mb-2 block font-semibold text-gray-700">
                   Email
                 </label>
-
                 <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-3 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
                   <FaRegEnvelope className="mr-3 text-gray-400" />
-
                   <input
                     type="email"
                     placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-transparent outline-none placeholder:text-gray-400"
                   />
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="mb-2 block font-semibold text-gray-700">
                   Password
                 </label>
-
                 <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-3 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
                   <FaLock className="mr-3 text-gray-400" />
-
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full bg-transparent outline-none placeholder:text-gray-400"
                   />
-
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -91,13 +119,11 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Remember Me */}
               <div className="flex items-center justify-between">
                 <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600">
                   <input type="checkbox" className="h-4 w-4 accent-blue-600" />
                   Remember me
                 </label>
-
                 <Link
                   to="/forgot-password"
                   className="text-sm font-medium text-blue-600 hover:underline"
@@ -106,24 +132,45 @@ const Login = () => {
                 </Link>
               </div>
 
-              {/* Login Button */}
               <button
                 type="submit"
-                className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Login
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="h-4 w-4 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      />
+                    </svg>
+                    Signing in...
+                  </>
+                ) : (
+                  "Login"
+                )}
               </button>
 
-              {/* Divider */}
               <div className="flex items-center gap-4">
                 <div className="h-px flex-1 bg-gray-200" />
-
                 <span className="text-sm text-gray-400">OR</span>
-
                 <div className="h-px flex-1 bg-gray-200" />
               </div>
 
-              {/* Signup */}
               <p className="text-center text-sm text-gray-600">
                 Don't have an account?
                 <Link
@@ -137,6 +184,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+
       <footer className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-gray-500">
         © {new Date().getFullYear()}{" "}
         <span className="font-semibold bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">

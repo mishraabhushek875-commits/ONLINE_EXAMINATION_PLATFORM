@@ -1,10 +1,26 @@
-import React from "react";
+import { useState } from "react";
 import { MdMailLock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import { useForgotPassword } from "../../hooks/useAuth";
 
 const forgotPass = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const forgotPasswordMutation = useForgotPassword();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    forgotPasswordMutation.mutate(
+      { email },
+      {
+        onSuccess: () => {
+          navigate("/reset-password", { state: { email } });
+        },
+      }
+    );
+  };
+
   return (
     <div className="min-w-screen min-h-screen flex items-center justify-center">
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
@@ -26,23 +42,36 @@ const forgotPass = () => {
           <span className="text-red-500"> reset password </span> otp on your
           email.
         </p>
-        <form className="w-full">
+
+        {forgotPasswordMutation.isError && (
+          <p className="w-full rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600 text-center">
+            {(forgotPasswordMutation.error as any)?.response?.data?.message ||
+              "Something went wrong"}
+          </p>
+        )}
+
+        <form className="w-full" onSubmit={handleSubmit}>
           <label className="text-gray-500 font-semibold">Email</label>
           <div className="w-full border-2 border-gray-400 px-4 py-2 rounded-lg flex gap-3 items-center ">
             <MdMailLock size={20} className="text-gray-500" />
             <input
-              type="text"
-              placeholder="Enter otp..."
-              className="outline-none"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+              className="outline-none w-full"
             />
           </div>
+          <button
+            type="submit"
+            disabled={forgotPasswordMutation.isPending}
+            className="mt-4 w-full rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {forgotPasswordMutation.isPending ? "Sending..." : "Send OTP"}
+          </button>
         </form>
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95"
-        >
-          Send OTP
-        </button>
+
         <div
           className="flex gap-2 items-center justify-center cursor-pointer"
           onClick={() => {
