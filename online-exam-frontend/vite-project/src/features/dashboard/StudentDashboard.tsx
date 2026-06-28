@@ -9,6 +9,7 @@ import {
   FaHistory,
 } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md";
+import AssignedExams from "../../Components/AssignedExams";
 import { useStudentDashboard } from "../../hooks/useStudentDashboard";
 import type {
   AssignedExam,
@@ -347,28 +348,8 @@ const StudentDashboard = () => {
             </h2>
           </div>
 
-          {!data?.assignedExams.length ? (
-            <div className="rounded-3xl border border-dashed border-gray-300 bg-white/60 p-12 text-center backdrop-blur-xl">
-              <MdAssignment className="mx-auto mb-3 text-gray-300" size={48} />
-              <p className="font-medium text-gray-700">
-                No exams <span className="text-orange-500">assigned</span> yet.
-              </p>
-              <p className="mt-1 text-sm text-gray-400">
-                Check back later or contact your{" "}
-                <span className="text-blue-500">administrator</span>.
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {data.assignedExams.map((assignment) => (
-                <ExamCard
-                  key={assignment.assignmentId}
-                  assignment={assignment}
-                  onStart={handleStartExam}
-                />
-              ))}
-            </div>
-          )}
+          {/* ✅ AssignedExams component — horizontal scroll, click → ExamDetail */}
+          <AssignedExams />
         </div>
 
         {(data?.latestResults?.length ?? 0) > 0 && (

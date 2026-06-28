@@ -1,6 +1,3 @@
-// src/features/exam/pages/ExamPage.tsx
-// Main exam interface — professional, locked, anti-cheat enabled
-
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -155,7 +152,7 @@ const ExamPage = () => {
   // Agar store mein attempt nahi toh rules page pe redirect
   useEffect(() => {
     if (!attemptId && !isLoading) {
-      navigate(`/student/exam/${examId}/rules`, { replace: true });
+      navigate(`/`, { replace: true });
     }
   }, [attemptId, isLoading, examId, navigate]);
 
