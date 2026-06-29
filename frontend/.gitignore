@@ -1,13 +1,10 @@
 # Environment file
+.node_modules/
+.next/
 .env
-
-# Node modules
-node_modules/
-
-# Optional
 .env.local
-.env.development
-.env.production
+.env.local.example
+
 
 # Logs
 *.log
