@@ -5,7 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import questionRoutes from "./routes/questionsRoute";
 import examRoutes from "./routes/examRoutes";
 import assignmentRoutes from "./routes/assignedRoutes";
-import bankRoutes from "./routes/bankController";
+import bankRoutes from "./routes/bankRoutes";
 
 dotenv.config();
 
@@ -30,8 +30,19 @@ app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/banks", bankRoutes);
 
-// existing routes ke neeche
+
+
+console.log("========== APP START ==========");
+console.log("Exam Router =", examRoutes);
+console.log("================================");
+
+app.use("/api/exams", (req, res, next) => {
+  console.log("🔥 Entered /api/exams middleware");
+  next();
+});
+
 app.use("/api/exams", examRoutes);
+
 app.use("/api/admin/exams", assignmentRoutes);
 // Agar koi galat route hit kare toh handle karne ke liye fallback catch
 app.use((req, res) => {
@@ -39,5 +50,6 @@ app.use((req, res) => {
     message: `Route ${req.originalUrl} not found`,
   });
 });
+
 
 export default app;

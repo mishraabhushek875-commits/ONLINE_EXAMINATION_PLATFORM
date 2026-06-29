@@ -8,13 +8,65 @@ import {
 } from "../controllers/examController";
 import auth from "../middleware/auth.middleware";
 
+console.log("✅ examRoutes.ts loaded");
+
 const router = Router();
 
-// All Admin only
-router.post("/", auth.authenticate, auth.adminMiddleware, createExam);
-router.get("/", auth.authenticate, auth.adminMiddleware, getAllExams);
-router.get("/:id", auth.authenticate, auth.adminMiddleware, getExamById);
-router.patch("/:id", auth.authenticate, auth.adminMiddleware, updateExam);
-router.delete("/:id", auth.authenticate, auth.adminMiddleware, deleteExam);
+// Test Route
+router.get("/test", (req, res) => {
+  console.log("✅ /api/exams/test hit");
+  res.json({
+    success: true,
+    message: "Exam Routes Working",
+  });
+});
+
+// Create Exam
+router.post(
+  "/",
+  auth.authenticate,
+  auth.adminMiddleware,
+  (req, res, next) => {
+    console.log("✅ POST /api/exams");
+    next();
+  },
+  createExam
+);
+
+// Get All Exams
+router.get(
+  "/",
+  (req, res, next) => {
+    console.log("✅ GET /api/exams matched");
+    next();
+  },
+  auth.authenticate,
+  auth.adminMiddleware,
+  getAllExams
+);
+
+// Get Exam By Id
+router.get(
+  "/:id",
+  auth.authenticate,
+  auth.adminMiddleware,
+  getExamById
+);
+
+// Update Exam
+router.patch(
+  "/:id",
+  auth.authenticate,
+  auth.adminMiddleware,
+  updateExam
+);
+
+// Delete Exam
+router.delete(
+  "/:id",
+  auth.authenticate,
+  auth.adminMiddleware,
+  deleteExam
+);
 
 export default router;
