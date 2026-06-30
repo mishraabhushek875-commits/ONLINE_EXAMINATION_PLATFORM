@@ -36,7 +36,7 @@ const AdminDashboard = () => {
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/10 blur-[140px]" />
       <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/10 blur-[140px]" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 pb-16 pt-8">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-8">
         <div className="mb-8">
           <p className="text-sm font-semibold text-orange-500">
             Welcome <span className="text-gray-500">back,</span>

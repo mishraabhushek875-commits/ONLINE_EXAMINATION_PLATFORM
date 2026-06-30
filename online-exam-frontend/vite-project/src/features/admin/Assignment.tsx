@@ -40,7 +40,7 @@ const AdminAssignments = () => {
   const selectedExam = exams?.find((e) => e.id === effectiveExamId);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Exam Assignments</h1>
@@ -74,7 +74,8 @@ const AdminAssignments = () => {
       </div>
 
       <div className="overflow-hidden rounded-3xl border border-white bg-white/80 shadow-sm backdrop-blur-xl">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[600px] text-sm">
           <thead className="border-b border-gray-100 bg-gray-50/80">
             <tr>
               <th className="px-6 py-3 text-left font-semibold text-gray-600">Student</th>
@@ -109,6 +110,7 @@ const AdminAssignments = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {open && (

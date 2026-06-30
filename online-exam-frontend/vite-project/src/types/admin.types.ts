@@ -7,7 +7,7 @@ export interface AdminStudent {
   email: string;
   phone: string;
   status: "active" | "inactive";
-  attempts?: { id: number; status: AttemptStatus; score: number | null }[];
+  attempts?: { id: number; status: AttemptStatus; score: number | null; passed: boolean | null }[];
   assignedExams?: { id: number; examId: number; studentId: number }[];
   updated_at?: string;
 }

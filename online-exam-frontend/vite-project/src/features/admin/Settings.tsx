@@ -42,7 +42,7 @@ const AdminSettings = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-6 py-8">
+    <div className="mx-auto max-w-2xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
         <p className="text-sm text-gray-500">Manage your admin profile and account security.</p>

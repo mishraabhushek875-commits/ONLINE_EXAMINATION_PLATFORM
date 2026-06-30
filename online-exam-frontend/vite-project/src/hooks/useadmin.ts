@@ -58,6 +58,25 @@ export const useQuestionBanks = () =>
     queryFn: bankService.getAll,
   });
 
+export const useQuestionBankDetail = (id: number | null) =>
+  useQuery({
+    queryKey: ["admin", "bank", id],
+    queryFn: () => bankService.getById(id as number),
+    enabled: id !== null,
+  });
+
+export const useUpdateBankQuestions = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, title, questionIds }: { id: number; title: string; questionIds: number[] }) =>
+      bankService.update(id, title, questionIds),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["admin", "banks"] });
+      qc.invalidateQueries({ queryKey: ["admin", "bank", vars.id] });
+    },
+  });
+};
+
 export const useCreateBank = () => {
   const qc = useQueryClient();
   return useMutation({
