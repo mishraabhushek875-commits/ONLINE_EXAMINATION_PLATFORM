@@ -6,68 +6,77 @@ const AssignedExams = () => {
   const { data, isLoading } = useMyAssignedExams();
   const assigned = data?.data ?? [];
 
+  if (isLoading) {
+    return (
+      <div className="rounded-2xl border border-white bg-white/80 p-6 text-center text-gray-500 shadow-sm backdrop-blur-xl">
+        Loading...
+      </div>
+    );
+  }
+
+  if (assigned.length === 0) {
+    return (
+      <div className="rounded-2xl border border-white bg-white/80 p-8 text-center text-gray-500 shadow-sm backdrop-blur-xl">
+        Abhi koi exam assign nahi hua hai.
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-2xl border border-orange-400 bg-orange-100 p-6 h-full">
-      <h2 className="text-center text-xl font-semibold mb-6">Assigned Exams</h2>
+    <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-200">
+      <div className="flex gap-4 w-max">
+        {assigned.map((test) => (
+          <div
+            key={test.id}
+            className="w-[300px] sm:w-[360px] flex-shrink-0 rounded-2xl border border-white bg-white/80 p-5 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-lg"
+          >
+            <div className="mb-1 flex items-start justify-between gap-2">
+              <h3 className="text-base font-bold text-gray-800 leading-snug">
+                {test.title}
+              </h3>
+            </div>
 
-      {isLoading ? (
-        <p className="text-center text-gray-500">Loading...</p>
-      ) : assigned.length === 0 ? (
-        <div className="bg-white rounded-xl p-8 text-center text-gray-500">
-          Abhi koi exam assign nahi hua hai.
-        </div>
-      ) : (
-        <div className="overflow-x-auto overflow-y-hidden scrollbar-thin">
-          <div className="flex gap-4 w-max">
-            {assigned.map((test) => (
-              <div
-                key={test.id}
-                className="w-[520px] flex-shrink-0 rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg transition"
-              >
-                {/* Title */}
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {test.title}
-                </h3>
+            <p className="mt-1 mb-4 text-sm text-gray-500 line-clamp-2">
+              {test.description ?? "No description provided."}
+            </p>
 
-                {/* Description */}
-                <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                  {test.description ?? "No description provided."}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="rounded-xl bg-orange-50 p-2.5 text-center">
+                <FaClock className="mx-auto text-orange-500 mb-1" size={14} />
+                <p className="text-xs text-gray-400">Duration</p>
+                <p className="text-sm font-bold text-orange-600">
+                  {test.duration}m
                 </p>
-
-                {/* Details */}
-                <div className="grid grid-cols-3 gap-3 mt-4">
-                  <div className="rounded-lg bg-orange-50 p-3 text-center">
-                    <FaClock className="mx-auto text-orange-500 mb-2" />
-                    <p className="text-xs text-gray-500">Duration</p>
-                    <p className="font-semibold">{test.duration} min</p>
-                  </div>
-
-                  <div className="rounded-lg bg-blue-50 p-3 text-center">
-                    <FaTrophy className="mx-auto text-blue-500 mb-2" />
-                    <p className="text-xs text-gray-500">Total Marks</p>
-                    <p className="font-semibold">{test.totalMarks}</p>
-                  </div>
-
-                  <div className="rounded-lg bg-green-50 p-3 text-center">
-                    <FaCheckCircle className="mx-auto text-green-500 mb-2" />
-                    <p className="text-xs text-gray-500">Passing Marks</p>
-                    <p className="font-semibold">{test.passingMarks}</p>
-                  </div>
-                </div>
-
-                {/* Button */}
-                <Link
-                  to={`/my-exams/${test.id}`}
-                  className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-green-500 py-2.5 text-white font-medium hover:bg-green-600 transition"
-                >
-                  See Details
-                  <FaArrowRight size={13} />
-                </Link>
               </div>
-            ))}
+              <div className="rounded-xl bg-blue-50 p-2.5 text-center">
+                <FaTrophy className="mx-auto text-blue-500 mb-1" size={14} />
+                <p className="text-xs text-gray-400">Marks</p>
+                <p className="text-sm font-bold text-blue-600">
+                  {test.totalMarks}
+                </p>
+              </div>
+              <div className="rounded-xl bg-emerald-50 p-2.5 text-center">
+                <FaCheckCircle
+                  className="mx-auto text-emerald-500 mb-1"
+                  size={14}
+                />
+                <p className="text-xs text-gray-400">Passing</p>
+                <p className="text-sm font-bold text-emerald-600">
+                  {test.passingMarks}
+                </p>
+              </div>
+            </div>
+
+            <Link
+              to={`/my-exams/${test.id}`}
+              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg active:scale-95"
+            >
+              See Details
+              <FaArrowRight size={12} />
+            </Link>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 };

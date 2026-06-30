@@ -1,6 +1,6 @@
-
 import { useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query"; // 👈 NEW IMPORT
 import { useExamAttemptStore } from "../store/examAttemptStore";
 import {
   startExamApi,
@@ -11,6 +11,7 @@ import {
 export const useExamAttempt = () => {
   const store = useExamAttemptStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient(); // 👈 NEW
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoSubmitRef = useRef(false);
 
@@ -31,7 +32,7 @@ export const useExamAttempt = () => {
         store.setLoading(false);
       }
     },
-    [store]
+    [store],
   );
 
   // ─── Select Answer + Auto-Save ───────────────────────────────────────
@@ -49,25 +50,29 @@ export const useExamAttempt = () => {
         }).catch(console.error);
       }
     },
-    [store]
+    [store],
   );
 
   // ─── Submit Exam ─────────────────────────────────────────────────────
   const submitExam = useCallback(
     async (isAutoSubmit = false) => {
       if (!store.attemptId || store.isSubmitting) return;
-      if (autoSubmitRef.current) return; // prevent double submit
+      if (autoSubmitRef.current) return;
       autoSubmitRef.current = true;
 
       store.setSubmitting(true);
-      // Clear timer
       if (timerRef.current) clearInterval(timerRef.current);
 
       try {
         const result = await submitExamApi(store.attemptId);
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["studentDashboard"] }),
+          queryClient.invalidateQueries({ queryKey: ["myResults"] }),
+          queryClient.invalidateQueries({ queryKey: ["my-results"] }), 
+        ]);
+
         store.resetExam();
-        // Navigate to dashboard — result wahan dikhega
-        navigate("/student/dashboard", {
+        navigate("/", {
           state: { latestResult: result, fromExam: true },
           replace: true,
         });
@@ -79,7 +84,7 @@ export const useExamAttempt = () => {
         autoSubmitRef.current = false;
       }
     },
-    [store, navigate]
+    [store, navigate, queryClient],
   );
 
   // ─── Timer ──────────────────────────────────────────────────────────
@@ -116,7 +121,6 @@ export const useExamAttempt = () => {
 
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Block: F12, Ctrl+Shift+I, Ctrl+U, Alt+Tab, PrintScreen
       if (
         e.key === "F12" ||
         (e.ctrlKey && e.shiftKey && e.key === "I") ||

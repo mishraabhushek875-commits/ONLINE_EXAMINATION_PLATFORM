@@ -1,6 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaGraduationCap } from "react-icons/fa";
+import { FaBars } from "react-icons/fa6";
 import logo from "../assets/logo.png";
+import { useUIStore } from "../store/uiStore";
 
 const authLinks = [
   { path: "/login", label: "Login" },
@@ -9,6 +11,8 @@ const authLinks = [
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const toggleSidebar = useUIStore((state) => state.toggleSidebar);
 
   const isAuthPage = [
     "/login",
@@ -21,12 +25,21 @@ const Navbar = () => {
   return (
     <nav className="relative z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="logo" className="h-8 w-auto" />
-        </Link>
+        <div className="flex items-center gap-3">
+          {!isAuthPage && (
+            <button
+              onClick={toggleSidebar}
+              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition"
+              aria-label="Open menu"
+            >
+              <FaBars size={20} />
+            </button>
+          )}
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="logo" className="h-8 w-auto" />
+          </Link>
+        </div>
 
-        {/* Right side — auth pages pe Login/Signup links dikhao */}
         {isAuthPage && (
           <div className="flex items-center gap-2">
             {authLinks.map((link) => (
@@ -45,18 +58,21 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Dashboard pages pe branding dikhao */}
         {!isAuthPage && (
-          <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-50 to-emerald-50 px-4 py-2">
+          <a
+            href="https://www.matnite.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-50 to-emerald-50 px-4 py-2 hover:shadow-md transition"
+          >
             <FaGraduationCap className="text-emerald-500" size={16} />
             <span className="bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-sm font-semibold text-transparent">
               Matnite Infotech
             </span>
-          </div>
+          </a>
         )}
       </div>
 
-      {/* Gradient bottom line */}
       <div className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-blue-500 via-emerald-500 to-orange-500 opacity-60" />
     </nav>
   );

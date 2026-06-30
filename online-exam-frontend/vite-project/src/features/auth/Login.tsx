@@ -1,5 +1,3 @@
-// src/features/auth/Login.tsx — sirf navigate path fix kiya: /reset-password → /verify
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -16,14 +14,16 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (!email || !password) {
       setError("Please enter your email and password.");
       return;
     }
+
     setIsLoading(true);
     try {
       await authService.login({ email, password });
-      navigate("/verify", { state: { email } }); // ✅ /verify pe — VerifyOtp.tsx wala route
+      navigate("/verify", { state: { email } });
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Login failed. Please try again.",
@@ -34,21 +34,21 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Decorative Background */}
+    <div className="relative min-h-screen overflow-hidden ">
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
       <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
       <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
       <div className="absolute bottom-20 right-1/4 h-[250px] w-[250px] rounded-full bg-red-500/15 blur-[120px]" />
 
       <div className="relative z-10 flex min-h-screen flex-col lg:flex-row">
-        {/* Left Section */}
-        <div className="hidden w-1/2 flex-col items-center justify-center px-12 lg:flex">
-          <h2 className="text-5xl text-gray-500">
+        <div className="hidden w-full flex-col items-center justify-center px-8 py-12 lg:flex lg:w-1/2 lg:px-12">
+          <h2 className="text-center text-3xl text-gray-500 sm:text-4xl lg:text-5xl">
             <span className="text-orange-500">Welcome</span> to
           </h2>
-          <h1 className="mt-8 text-9xl font-bold wave-text">MAT TEST</h1>
-          <p className="mt-8 max-w-md text-center text-lg text-gray-600">
+          <h1 className="mt-6 text-center text-7xl font-bold lg:mt-8 lg:text-9xl wave-text">
+            MAT TEST
+          </h1>
+          <p className="mt-6 max-w-md text-center text-base text-gray-600 lg:mt-8 lg:text-lg">
             A{" "}
             <span className="text-green-500">
               Matnite's Online Examination Portal
@@ -62,12 +62,20 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Right Section */}
-        <div className="flex w-full items-center justify-center p-6 lg:w-1/2 lg:p-20">
-          <div className="w-full max-w-md rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
-            <h2 className="text-3xl font-bold text-gray-800">Login</h2>
-            <p className="mt-2 text-gray-500">
-              Welcome back! Please login to your account.
+        <div className="flex w-full items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:w-1/2 lg:px-20 lg:py-20">
+          <div className="w-full max-w-md rounded-2xl border border-white bg-white/80 p-6 shadow-2xl backdrop-blur-xl sm:rounded-3xl sm:p-8">
+            <div className="mb-4 block text-center lg:hidden">
+              <span className="text-xl font-bold text-orange-500">
+                MAT TEST
+              </span>
+              <span className="ml-1 text-xl text-gray-500">Portal</span>
+            </div>
+
+            <h2 className="text-2xl font-bold sm:text-3xl">Login</h2>
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">
+              <span className="text-orange-500">Welcome</span> back! Please{" "}
+              <span className="text-blue-500">login</span> to your{" "}
+              <span className="text-green-500">account</span>.
             </p>
 
             {error && (
@@ -76,39 +84,43 @@ const Login = () => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <form
+              onSubmit={handleSubmit}
+              className="mt-6 space-y-4 sm:mt-8 sm:space-y-5"
+            >
               <div>
-                <label className="mb-2 block font-semibold text-gray-700">
+                <label className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
                   Email
                 </label>
-                <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-3 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
-                  <FaRegEnvelope className="mr-3 text-gray-400" />
+                <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-2.5 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 sm:py-3">
+                  <FaRegEnvelope className="mr-3 flex-shrink-0 text-gray-400" />
                   <input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400 sm:text-base"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block font-semibold text-gray-700">
+                <label className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
                   Password
                 </label>
-                <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-3 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
-                  <FaLock className="mr-3 text-gray-400" />
+                <div className="flex items-center rounded-xl border border-gray-300 bg-white px-4 py-2.5 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 sm:py-3">
+                  <FaLock className="mr-3 flex-shrink-0 text-gray-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400 sm:text-base"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
+                    className="flex-shrink-0"
                   >
                     {showPassword ? (
                       <FaEyeSlash className="cursor-pointer text-gray-500" />
@@ -119,7 +131,7 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600">
                   <input type="checkbox" className="h-4 w-4 accent-blue-600" />
                   Remember me
@@ -135,7 +147,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2.5 text-sm font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 sm:py-3 sm:text-base"
               >
                 {isLoading ? (
                   <>
@@ -185,9 +197,9 @@ const Login = () => {
         </div>
       </div>
 
-      <footer className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-gray-500">
+      <footer className="absolute bottom-4 left-1/2 z-20 w-full -translate-x-1/2 text-center text-xs text-gray-500 sm:text-sm">
         © {new Date().getFullYear()}{" "}
-        <span className="font-semibold bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text font-semibold text-transparent">
           Matnite Infotech
         </span>
         . All rights reserved.

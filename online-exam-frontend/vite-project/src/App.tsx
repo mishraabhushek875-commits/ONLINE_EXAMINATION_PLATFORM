@@ -11,10 +11,22 @@ import VerifyOtp from "./features/auth/VerifyOtp";
 import Results from "./features/result/Result";
 import ResultDetail from "./features/result/ResultDetail";
 import MyExams from "./features/exam/MyExams";
-import ExamDetail from "./features/exam/ExamDetail"; // ✅ add
+import ExamDetail from "./features/exam/ExamDetail";
 import DashboardLayout from "./layout/DashboardLayout";
 import ProtectedRoute from "./Components/ProtectRoute";
 import PublicRoute from "./Components/PublicRoute";
+
+// ─── Admin ──────────────────────────────────────────────
+import AdminRoute from "./Components/AdminRoutes";
+import AdminLayout from "./Components/AdminLayout";
+import AdminDashboard from "./features/dashboard/adminDashboard";
+import AdminStudents from "./features/admin/students";
+import AdminQuestionBanks from "./features/admin/QuestionBank";
+import AdminExams from "./features/admin/Exams";
+import AdminQuestions from "./features/admin/Questions";
+import AdminAssignments from "./features/admin/Assignment";
+import AdminResults from "./features/admin/Results";
+import AdminSettings from "./features/admin/Settings";
 
 const AuthLayout = () => (
   <>
@@ -26,10 +38,8 @@ const AuthLayout = () => (
 function App() {
   return (
     <Routes>
-      {/* No layout — full screen exam */}
       <Route path="/student/exam/:examId/attempt" element={<ExamPage />} />
 
-      {/* Public only */}
       <Route element={<PublicRoute />}>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
@@ -40,15 +50,28 @@ function App() {
         </Route>
       </Route>
 
-      {/* Protected */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<StudentDashboard />} />
           <Route path="/my-exams" element={<MyExams />} />
-          <Route path="/my-exams/:id" element={<ExamDetail />} /> {/* ✅ add */}
+          <Route path="/my-exams/:id" element={<ExamDetail />} />
           <Route path="/student/exam/:examId/rules" element={<ExamRules />} />
           <Route path="/results" element={<Results />} />
           <Route path="/result/:id" element={<ResultDetail />} />
+        </Route>
+      </Route>
+
+      {/* Admin only */}
+      <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/students" element={<AdminStudents />} />
+          <Route path="/admin/question-banks" element={<AdminQuestionBanks />} />
+          <Route path="/admin/exams" element={<AdminExams />} />
+          <Route path="/admin/questions" element={<AdminQuestions />} />
+          <Route path="/admin/assignments" element={<AdminAssignments />} />
+          <Route path="/admin/results" element={<AdminResults />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
         </Route>
       </Route>
     </Routes>

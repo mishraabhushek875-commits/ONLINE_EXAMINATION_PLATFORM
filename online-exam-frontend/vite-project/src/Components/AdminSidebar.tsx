@@ -1,19 +1,31 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaHome, FaClipboardList, FaChartBar } from "react-icons/fa";
-import { FaRightLong, FaXmark } from "react-icons/fa6";
+import {
+  FaHome,
+  FaUsers,
+  FaLayerGroup,
+  FaClipboardList,
+  FaQuestionCircle,
+  FaUserCheck,
+  FaChartBar,
+  FaCog,
+} from "react-icons/fa";
+import { FaRightLong } from "react-icons/fa6";
 import { useAuthStore } from "../store/authStore";
-import { useUIStore } from "../store/uiStore";
 
 const nav = [
-  { id: 1, name: "Dashboard", to: "/", icon: FaHome },
-  { id: 2, name: "My Exams", to: "/my-exams", icon: FaClipboardList },
-  { id: 3, name: "Results", to: "/results", icon: FaChartBar },
+  { id: 1, name: "Dashboard", to: "/admin", icon: FaHome },
+  { id: 2, name: "Students", to: "/admin/students", icon: FaUsers },
+  { id: 3, name: "Question Banks", to: "/admin/question-banks", icon: FaLayerGroup },
+  { id: 4, name: "Exams", to: "/admin/exams", icon: FaClipboardList },
+  { id: 5, name: "Questions", to: "/admin/questions", icon: FaQuestionCircle },
+  { id: 6, name: "Assignments", to: "/admin/assignments", icon: FaUserCheck },
+  { id: 7, name: "Results", to: "/admin/results", icon: FaChartBar },
+  { id: 8, name: "Settings", to: "/admin/settings", icon: FaCog },
 ];
 
-const Sidebar = () => {
+const AdminSidebar = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const { isSidebarOpen, toggleSidebar } = useUIStore();
 
   const handleLogout = () => {
     logout();
@@ -21,8 +33,8 @@ const Sidebar = () => {
     navigate("/login");
   };
 
-  const NavItems = () => (
-    <>
+  return (
+    <aside className="w-64 bg-white border-r border-gray-200 p-5 flex flex-col justify-between">
       <div className="space-y-3">
         {nav.map((item) => {
           const Icon = item.icon;
@@ -30,7 +42,7 @@ const Sidebar = () => {
             <NavLink
               key={item.id}
               to={item.to}
-              onClick={() => isSidebarOpen && toggleSidebar()}
+              end={item.to === "/admin"}
               className={({ isActive }) =>
                 `group relative flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition-all duration-300
                 ${
@@ -54,7 +66,7 @@ const Sidebar = () => {
                         : "bg-blue-100 text-blue-600 group-hover:bg-blue-500 group-hover:text-white"
                     }`}
                   >
-                    <Icon size={18} />
+                    <Icon size={16} />
                   </div>
                   <span>{item.name}</span>
                 </>
@@ -63,7 +75,6 @@ const Sidebar = () => {
           );
         })}
       </div>
-
       <div
         onClick={handleLogout}
         className="rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2 px-4 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 cursor-pointer w-full flex items-center justify-between"
@@ -71,42 +82,8 @@ const Sidebar = () => {
         <button type="button">Log Out</button>
         <FaRightLong />
       </div>
-    </>
-  );
-
-  return (
-    <>
-      {isSidebarOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-30 bg-black/40"
-          onClick={toggleSidebar}
-        />
-      )}
-
-      <aside
-        className={`lg:hidden fixed top-0 left-0 z-40 h-full w-64 bg-white border-r border-gray-200 p-5 flex flex-col justify-between transform transition-transform duration-300 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <span className="font-bold text-lg bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">
-            MAT TEST
-          </span>
-          <button
-            onClick={toggleSidebar}
-            className="p-1 rounded-lg text-gray-500 hover:bg-gray-100"
-          >
-            <FaXmark size={18} />
-          </button>
-        </div>
-        <NavItems />
-      </aside>
-
-      <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 p-5 flex-col justify-between">
-        <NavItems />
-      </aside>
-    </>
+    </aside>
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;

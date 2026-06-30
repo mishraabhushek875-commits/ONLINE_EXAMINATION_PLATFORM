@@ -1,5 +1,3 @@
-// src/features/exam/ExamRules.tsx
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
@@ -98,7 +96,6 @@ const ExamRules = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background blobs */}
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
       <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
       <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
@@ -106,7 +103,6 @@ const ExamRules = () => {
       <div className="absolute top-32 left-1/2 h-[250px] w-[250px] rounded-full bg-purple-500/10 blur-[100px]" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-12">
-        {/* ── Top Header ───────────────────────────────────── */}
         <div className="mb-8 rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 shadow-lg">
@@ -122,10 +118,8 @@ const ExamRules = () => {
             </div>
           </div>
 
-          {/* Divider */}
           <div className="my-6 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
-          {/* Stats */}
           <div className="grid grid-cols-3 gap-4">
             <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-4 text-center">
               <div className="absolute -top-3 -right-3 h-12 w-12 rounded-full bg-blue-200/40" />
@@ -161,7 +155,6 @@ const ExamRules = () => {
           </div>
         </div>
 
-        {/* ── Rules ───────────────────────────────────────── */}
         <div className="mb-8 rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
           <h2 className="mb-6 flex items-center gap-2.5 text-xl font-bold text-gray-800">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100">
@@ -194,7 +187,6 @@ const ExamRules = () => {
           </div>
         </div>
 
-        {/* ── Agreement + CTA ──────────────────────────────── */}
         <div className="rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
           {error && (
             <div className="mb-5 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -203,7 +195,6 @@ const ExamRules = () => {
             </div>
           )}
 
-          {/* Checkbox agreement */}
           <label
             className={`mb-6 flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-4 transition ${checked ? "border-blue-400 bg-blue-50/60" : "border-gray-200 bg-gray-50 hover:border-gray-300"}`}
           >
@@ -226,7 +217,6 @@ const ExamRules = () => {
             </span>
           </label>
 
-          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => navigate(-1)}

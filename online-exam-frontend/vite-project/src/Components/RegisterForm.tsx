@@ -98,7 +98,7 @@ export default function RegisterForm() {
   };
 
   const inputBase =
-    "w-full pl-9 pr-4 py-2 rounded-lg border text-sm outline-none transition-all bg-white text-gray-800";
+    "w-full pl-9 pr-4 py-2 sm:py-2.5 rounded-lg border text-sm outline-none transition-all bg-white text-gray-800";
   const inputNormal =
     "border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-100";
   const inputError =
@@ -106,12 +106,13 @@ export default function RegisterForm() {
 
   return (
     <div className="mt-4 w-full">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Full Name */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Full Name</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700">
+            Full Name
+          </label>
           <div className="relative">
-            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs sm:text-sm" />
             <input
               type="text"
               name="fullName"
@@ -126,11 +127,12 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Email */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Email</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700">
+            Email
+          </label>
           <div className="relative">
-            <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs sm:text-sm" />
             <input
               type="email"
               name="email"
@@ -145,11 +147,12 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Phone */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Phone</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700">
+            Phone
+          </label>
           <div className="relative">
-            <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs sm:text-sm" />
             <input
               type="tel"
               name="phone"
@@ -164,11 +167,12 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Password</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700">
+            Password
+          </label>
           <div className="relative">
-            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs sm:text-sm" />
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -190,13 +194,12 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Confirm Password */}
-        <div className="flex flex-col gap-1 col-span-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <label className="text-xs sm:text-sm font-medium text-gray-700">
             Confirm Password
           </label>
           <div className="relative">
-            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs sm:text-sm" />
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
@@ -218,11 +221,10 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Submit */}
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <button
             onClick={handleSubmit}
-            className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 py-2.5 sm:py-3 font-semibold text-white transition duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 text-sm sm:text-base"
           >
             Sign Up
           </button>

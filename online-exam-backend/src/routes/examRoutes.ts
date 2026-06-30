@@ -5,16 +5,16 @@ import {
   getExamById,
   updateExam,
 } from "../controllers/examController";
-import { getMyAssignedExams } from "../controllers/assignmentController"; // import add
+import { getMyAssignedExams } from "../controllers/assignmentController";
 import auth from "../middleware/auth.middleware";
 import { Router } from "express";
 
 const router = Router();
 
 // Student route — sirf authenticate, admin nahi chahiye
-router.get("/assigned/me", auth.authenticate, getMyAssignedExams); // yeh add karo
+router.get("/assigned/me", auth.authenticate, getMyAssignedExams);
 
-// Existing Admin only routes
+// Admin only routes
 router.post("/", auth.authenticate, auth.adminMiddleware, createExam);
 router.get("/", auth.authenticate, auth.adminMiddleware, getAllExams);
 router.get("/:id", auth.authenticate, auth.adminMiddleware, getExamById);

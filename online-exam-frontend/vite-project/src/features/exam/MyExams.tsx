@@ -1,6 +1,3 @@
-// src/features/exam/MyExams.tsx
-// Click on exam card → /my-exams/:id (ExamDetail)
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -121,11 +118,9 @@ const MyExams = () => {
               return (
                 <div
                   key={assignment.assignmentId}
-                  // ✅ Click karo → ExamDetail page pe jao
                   onClick={() => navigate(`/my-exams/${exam.id}`)}
                   className="group relative cursor-pointer rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
-                  {/* Status Badge */}
                   <div className="mb-4 flex items-center justify-between">
                     <span
                       className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${status.cls}`}
@@ -138,7 +133,6 @@ const MyExams = () => {
                     </div>
                   </div>
 
-                  {/* Title */}
                   <h2 className="text-xl font-semibold text-gray-800">
                     {exam.title}
                   </h2>
@@ -148,7 +142,6 @@ const MyExams = () => {
                     </p>
                   )}
 
-                  {/* Info Grid */}
                   <div className="mt-6 grid grid-cols-2 gap-4 rounded-xl bg-gray-50 p-4">
                     <div>
                       <p className="text-xs text-gray-500">Duration</p>
@@ -182,7 +175,6 @@ const MyExams = () => {
                     )}
                   </div>
 
-                  {/* See Details hint */}
                   <div
                     className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold transition ${
                       isExpired
