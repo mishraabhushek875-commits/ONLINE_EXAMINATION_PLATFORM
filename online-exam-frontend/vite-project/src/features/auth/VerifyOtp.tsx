@@ -4,6 +4,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useVerifyOtp } from "../../hooks/useAuth";
 import authService from "../../services/auth";
+import { decodeJwt } from "../../lib/jwt";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
@@ -86,7 +87,12 @@ const VerifyOtp = () => {
     verifyOtpMutation.mutate(
       { email, otp: enteredOtp },
       {
-        onSuccess: () => navigate("/"),
+        onSuccess: (response) => {
+          const payload = decodeJwt(response.data);
+          navigate(payload?.role === "admin" ? "/admin" : "/", {
+            replace: true,
+          });
+        },
       },
     );
   };
