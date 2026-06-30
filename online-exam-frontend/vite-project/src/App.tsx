@@ -16,6 +16,18 @@ import DashboardLayout from "./layout/DashboardLayout";
 import ProtectedRoute from "./Components/ProtectRoute";
 import PublicRoute from "./Components/PublicRoute";
 
+// ─── Admin ──────────────────────────────────────────────
+import AdminRoute from "./Components/AdminRoutes";
+import AdminLayout from "./Components/AdminLayout";
+import AdminDashboard from "./features/dashboard/adminDashboard";
+import AdminStudents from "./features/admin/students";
+import AdminQuestionBanks from "./features/admin/QuestionBank";
+import AdminExams from "./features/admin/Exams";
+import AdminQuestions from "./features/admin/Questions";
+import AdminAssignments from "./features/admin/Assignment";
+import AdminResults from "./features/admin/Results";
+import AdminSettings from "./features/admin/Settings";
+
 const AuthLayout = () => (
   <>
     <Navbar />
@@ -46,6 +58,20 @@ function App() {
           <Route path="/student/exam/:examId/rules" element={<ExamRules />} />
           <Route path="/results" element={<Results />} />
           <Route path="/result/:id" element={<ResultDetail />} />
+        </Route>
+      </Route>
+
+      {/* Admin only */}
+      <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/students" element={<AdminStudents />} />
+          <Route path="/admin/question-banks" element={<AdminQuestionBanks />} />
+          <Route path="/admin/exams" element={<AdminExams />} />
+          <Route path="/admin/questions" element={<AdminQuestions />} />
+          <Route path="/admin/assignments" element={<AdminAssignments />} />
+          <Route path="/admin/results" element={<AdminResults />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
         </Route>
       </Route>
     </Routes>
