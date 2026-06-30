@@ -219,14 +219,12 @@ export const authController = {
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      const updated = await prisma.user.update({
+      await prisma.user.update({
         where: { email },
         data: { password: hashedPassword },
+        select: { id: true },
       });
-      console.log("Updated password hash:", updated.password);
-      res
-        .status(200)
-        .json({ message: "Password reset successfully", user: updated });
+      res.status(200).json({ message: "Password reset successfully" });
       return;
     } catch (error: any) {
       res.status(500).json({

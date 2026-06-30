@@ -28,13 +28,19 @@ const StatCard = ({
   value: number | string;
   gradient: string;
 }) => (
-  <div className="relative overflow-hidden rounded-2xl border border-white bg-white/80 p-5 shadow-sm backdrop-blur-xl">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-500">{label}</p>
-        <p className="mt-1 text-3xl font-bold text-gray-800">{value}</p>
+  <div className="relative overflow-hidden rounded-2xl border border-white bg-white/80 p-4 sm:p-5 shadow-sm backdrop-blur-xl">
+    <div className="flex items-center justify-between gap-2">
+      <div className="min-w-0">
+        <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+          {label}
+        </p>
+        <p className="mt-1 text-2xl sm:text-3xl font-bold text-gray-800">
+          {value}
+        </p>
       </div>
-      <div className={`rounded-xl p-3 ${gradient}`}>{icon}</div>
+      <div className={`rounded-xl p-2.5 sm:p-3 flex-shrink-0 ${gradient}`}>
+        {icon}
+      </div>
     </div>
   </div>
 );
@@ -51,7 +57,7 @@ const LatestResultBanner = ({
 
   return (
     <div
-      className={`mb-6 rounded-3xl border p-6 shadow-sm backdrop-blur-xl ${
+      className={`mb-6 rounded-3xl border p-5 sm:p-6 shadow-sm backdrop-blur-xl ${
         passed
           ? "border-emerald-200 bg-emerald-50/80"
           : "border-red-200 bg-red-50/80"
@@ -73,7 +79,7 @@ const LatestResultBanner = ({
       </div>
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-800">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800">
             {"examTitle" in result ? result.examTitle : "Exam"}
           </h3>
           <p
@@ -84,7 +90,10 @@ const LatestResultBanner = ({
           </p>
         </div>
         <div className="relative flex-shrink-0">
-          <svg className="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
+          <svg
+            className="h-16 w-16 sm:h-20 sm:w-20 -rotate-90"
+            viewBox="0 0 36 36"
+          >
             <circle
               cx="18"
               cy="18"
@@ -105,7 +114,7 @@ const LatestResultBanner = ({
             />
           </svg>
           <span
-            className={`absolute inset-0 flex items-center justify-center text-lg font-bold ${passed ? "text-emerald-600" : "text-red-500"}`}
+            className={`absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold ${passed ? "text-emerald-600" : "text-red-500"}`}
           >
             {pct}%
           </span>
@@ -162,9 +171,9 @@ const ExamCard = ({
   const config = statusConfig[attemptStatus] ?? statusConfig.not_started;
 
   return (
-    <div className="rounded-3xl border border-white bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-lg hover:shadow-green-400 transition-all duration-1000 shadow-orange-400 ">
+    <div className="rounded-3xl border border-white bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400">
       <div className="mb-4 flex items-start justify-between gap-3">
-        <h3 className="font-bold  text-2xl ">{exam.title}</h3>
+        <h3 className="font-bold text-xl sm:text-2xl">{exam.title}</h3>
         <span
           className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${config.badgeCls}`}
         >
@@ -179,21 +188,23 @@ const ExamCard = ({
       )}
 
       <div className="mb-5 grid grid-cols-3 gap-2">
-        <div className="rounded-xl bg-blue-50 p-3 text-center">
-          <p className="text-base font-bold text-blue-600">{exam.duration}m</p>
+        <div className="rounded-xl bg-blue-50 p-2.5 sm:p-3 text-center">
+          <p className="text-sm sm:text-base font-bold text-blue-600">
+            {exam.duration}m
+          </p>
           <p className="text-xs text-gray-400">Duration</p>
         </div>
-        <div className="rounded-xl bg-emerald-50 p-3 text-center">
-          <p className="text-base font-bold text-emerald-600">
+        <div className="rounded-xl bg-emerald-50 p-2.5 sm:p-3 text-center">
+          <p className="text-sm sm:text-base font-bold text-emerald-600">
             {exam.totalMarks}
           </p>
           <p className="text-xs text-gray-400">Total Marks</p>
         </div>
-        <div className="rounded-xl bg-orange-50 p-3 text-center">
+        <div className="rounded-xl bg-orange-50 p-2.5 sm:p-3 text-center">
           {attemptStatus === "submitted" ? (
             <>
               <p
-                className={`text-base font-bold ${passed ? "text-emerald-600" : "text-red-500"}`}
+                className={`text-sm sm:text-base font-bold ${passed ? "text-emerald-600" : "text-red-500"}`}
               >
                 {score}
               </p>
@@ -201,7 +212,7 @@ const ExamCard = ({
             </>
           ) : (
             <>
-              <p className="text-base font-bold text-orange-600">
+              <p className="text-sm sm:text-base font-bold text-orange-600">
                 {exam.passingMarks}
               </p>
               <p className="text-xs text-gray-400">Pass Marks</p>
@@ -251,7 +262,7 @@ const StudentDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <svg
             className="h-10 w-10 animate-spin text-blue-500"
@@ -282,7 +293,7 @@ const StudentDashboard = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="flex min-h-[60vh] items-center justify-center p-6">
         <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center shadow-md">
           <FaTimesCircle className="mx-auto mb-3 text-red-400" size={36} />
           <p className="mb-4 font-medium text-red-600">{error}</p>
@@ -298,28 +309,30 @@ const StudentDashboard = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
-      <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
-      <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
-      <div className="absolute bottom-20 right-1/4 h-[250px] w-[250px] rounded-full bg-red-500/15 blur-[120px]" />
+    <div className="relative overflow-hidden">
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
+      <div className="pointer-events-none absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
+      <div className="pointer-events-none absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
+      <div className="pointer-events-none absolute bottom-20 right-1/4 h-[250px] w-[250px] rounded-full bg-red-500/15 blur-[120px]" />
 
-      <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20 pt-8">
-        <div className="mb-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 pb-20 pt-6 sm:pt-8">
+        <div className="mb-6 sm:mb-8">
           <p className="text-sm font-semibold text-orange-500">
-            Welcome <span className=" text-gray-500">back,</span>
+            Welcome <span className="text-gray-500">back,</span>
           </p>
-          <h1 className="text-3xl font-bold ">
+          <h1 className="text-2xl sm:text-3xl font-bold">
             {data?.student.full_name ?? "Student"} 👋
           </h1>
-          <p className="text-gray-400">{data?.student.email}</p>
+          <p className="text-gray-400 text-sm sm:text-base">
+            {data?.student.email}
+          </p>
         </div>
 
         {freshResult?.fromExam && freshResult.latestResult && (
           <LatestResultBanner result={freshResult.latestResult} />
         )}
 
-        <div className="mb-8 grid grid-cols-3 gap-4 ">
+        <div className="mb-6 sm:mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <StatCard
             icon={<MdAssignment className="text-white" size={20} />}
             label="Assigned Exams"
@@ -340,15 +353,13 @@ const StudentDashboard = () => {
           />
         </div>
 
-        <div className="mb-10">
+        <div className="mb-8 sm:mb-10">
           <div className="mb-4 flex items-center gap-2">
             <FaBookOpen className="text-blue-500" />
-            <h2 className="text-3xl font-bold ">
+            <h2 className="text-2xl sm:text-3xl font-bold">
               Your <span className="text-blue-500">Exams</span>
             </h2>
           </div>
-
-          {/* ✅ AssignedExams component — horizontal scroll, click → ExamDetail */}
           <AssignedExams />
         </div>
 
@@ -356,25 +367,25 @@ const StudentDashboard = () => {
           <div>
             <div className="mb-4 flex items-center gap-2">
               <FaHistory className="text-purple-500" />
-              <h2 className="text-3xl font-bold text-gray-800">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
                 Recent <span className="text-emerald-500">Results</span>
               </h2>
             </div>
 
-            <div className="overflow-hidden rounded-3xl border border-white bg-white/80 shadow-sm backdrop-blur-xl">
+            <div className="overflow-x-auto rounded-3xl border border-white bg-white/80 shadow-sm backdrop-blur-xl">
               <table className="w-full text-sm">
                 <thead className="border-b border-gray-100 bg-gray-50/80">
                   <tr>
-                    <th className="px-6 py-3 text-left font-semibold text-gray-600">
+                    <th className="px-4 sm:px-6 py-3 text-left font-semibold text-gray-600">
                       Exam
                     </th>
-                    <th className="px-6 py-3 text-center font-semibold text-gray-600">
+                    <th className="px-4 sm:px-6 py-3 text-center font-semibold text-gray-600">
                       Score
                     </th>
-                    <th className="px-6 py-3 text-center font-semibold text-gray-600">
+                    <th className="px-4 sm:px-6 py-3 text-center font-semibold text-gray-600">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-right font-semibold text-gray-600">
+                    <th className="px-4 sm:px-6 py-3 text-right font-semibold text-gray-600">
                       Date
                     </th>
                   </tr>
@@ -385,16 +396,16 @@ const StudentDashboard = () => {
                       key={r.attemptId}
                       className="transition hover:bg-gray-50/80"
                     >
-                      <td className="px-6 py-4 font-medium text-gray-800">
+                      <td className="px-4 sm:px-6 py-4 font-medium text-gray-800">
                         {r.examTitle}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 sm:px-6 py-4 text-center">
                         <span className="font-bold text-gray-700">
                           {r.score}
                         </span>
                         <span className="text-gray-400">/{r.totalMarks}</span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 sm:px-6 py-4 text-center">
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${r.passed ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`}
                         >
@@ -406,7 +417,7 @@ const StudentDashboard = () => {
                           {r.passed ? "Passed" : "Failed"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-gray-400">
+                      <td className="px-4 sm:px-6 py-4 text-right text-gray-400">
                         {r.submittedAt
                           ? new Date(r.submittedAt).toLocaleDateString(
                               "en-IN",
@@ -427,7 +438,7 @@ const StudentDashboard = () => {
         )}
       </div>
 
-      <footer className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-gray-500">
+      <footer className="relative z-10 pb-6 text-center text-sm text-gray-500">
         © {new Date().getFullYear()}{" "}
         <span className="font-semibold">
           <span className="text-blue-600">Matnite</span>{" "}

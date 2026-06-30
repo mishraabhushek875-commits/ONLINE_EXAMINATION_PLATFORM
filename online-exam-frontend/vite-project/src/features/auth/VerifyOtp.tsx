@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { MdLockPerson } from "react-icons/md";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useNavigate, useLocation } from "react-router-dom"; // useLocation add
-import { useVerifyOtp } from "../../hooks/useAuth"; // hook import
-import authService from "../../services/auth"; // resend ke liye
+import { useNavigate, useLocation } from "react-router-dom";
+import { useVerifyOtp } from "../../hooks/useAuth";
+import authService from "../../services/auth";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email as string | undefined; // Login se aaya email
+  const email = location.state?.email as string | undefined;
 
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [timer, setTimer] = useState(30);
@@ -16,14 +16,12 @@ const VerifyOtp = () => {
   const [resending, setResending] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const verifyOtpMutation = useVerifyOtp(); // hook plug-in
+  const verifyOtpMutation = useVerifyOtp();
 
-  // Email nahi mila (direct URL hit kiya) → login pe bhej do
   useEffect(() => {
     if (!email) navigate("/login");
   }, [email, navigate]);
 
-  // Countdown timer for resend OTP — yeh same hi rahega
   useEffect(() => {
     if (timer === 0) {
       setCanResend(true);
@@ -97,21 +95,17 @@ const VerifyOtp = () => {
 
   return (
     <div className="min-w-screen min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background blobs — matching resetPass page */}
       <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[140px]" />
       <div className="absolute top-20 -right-32 h-[350px] w-[350px] rounded-full bg-emerald-500/20 blur-[140px]" />
       <div className="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-orange-500/15 blur-[140px]" />
       <div className="absolute bottom-20 right-1/4 h-[250px] w-[250px] rounded-full bg-red-500/15 blur-[120px]" />
       <div className="absolute top-20 right-[600px] h-[250px] w-[250px] z-11 rounded-full bg-purple-500/15 blur-[60px]" />
 
-      {/* Card */}
       <div className="p-8 flex flex-col items-center justify-center bg-white z-10 gap-5 shadow-2xl rounded-2xl w-full max-w-sm mx-4">
-        {/* Icon */}
         <div className="p-4 bg-purple-50 rounded-full">
           <MdLockPerson className="text-purple-500" size={70} />
         </div>
 
-        {/* Heading */}
         <div className="text-center">
           <h1 className="text-2xl font-bold">
             Verify <span className="text-blue-500">OTP</span>
@@ -122,7 +116,6 @@ const VerifyOtp = () => {
           </p>
         </div>
 
-        {/* Error message */}
         {verifyOtpMutation.isError && (
           <p className="w-full rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600 text-center">
             {(verifyOtpMutation.error as any)?.response?.data?.message ||
@@ -130,7 +123,6 @@ const VerifyOtp = () => {
           </p>
         )}
 
-        {/* OTP Input Boxes */}
         <form
           onSubmit={handleVerify}
           className="w-full flex flex-col items-center gap-5"
@@ -158,7 +150,6 @@ const VerifyOtp = () => {
             ))}
           </div>
 
-          {/* Verify Button */}
           <button
             type="submit"
             disabled={!isComplete || verifyOtpMutation.isPending}
@@ -173,7 +164,6 @@ const VerifyOtp = () => {
           </button>
         </form>
 
-        {/* Resend Timer */}
         <div className="text-sm text-gray-500 font-medium text-center">
           {canResend ? (
             <span>
@@ -196,7 +186,6 @@ const VerifyOtp = () => {
           )}
         </div>
 
-        {/* Back to Login */}
         <div
           className="flex gap-2 items-center justify-center cursor-pointer"
           onClick={() => navigate("/login")}
@@ -208,7 +197,6 @@ const VerifyOtp = () => {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-gray-500">
         © {new Date().getFullYear()}{" "}
         <span className="font-semibold bg-gradient-to-r from-blue-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">

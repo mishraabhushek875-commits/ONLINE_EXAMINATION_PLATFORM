@@ -11,7 +11,7 @@ import VerifyOtp from "./features/auth/VerifyOtp";
 import Results from "./features/result/Result";
 import ResultDetail from "./features/result/ResultDetail";
 import MyExams from "./features/exam/MyExams";
-import ExamDetail from "./features/exam/ExamDetail"; // ✅ add
+import ExamDetail from "./features/exam/ExamDetail";
 import DashboardLayout from "./layout/DashboardLayout";
 import ProtectedRoute from "./Components/ProtectRoute";
 import PublicRoute from "./Components/PublicRoute";
@@ -26,10 +26,8 @@ const AuthLayout = () => (
 function App() {
   return (
     <Routes>
-      {/* No layout — full screen exam */}
       <Route path="/student/exam/:examId/attempt" element={<ExamPage />} />
 
-      {/* Public only */}
       <Route element={<PublicRoute />}>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
@@ -40,12 +38,11 @@ function App() {
         </Route>
       </Route>
 
-      {/* Protected */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<StudentDashboard />} />
           <Route path="/my-exams" element={<MyExams />} />
-          <Route path="/my-exams/:id" element={<ExamDetail />} /> {/* ✅ add */}
+          <Route path="/my-exams/:id" element={<ExamDetail />} />
           <Route path="/student/exam/:examId/rules" element={<ExamRules />} />
           <Route path="/results" element={<Results />} />
           <Route path="/result/:id" element={<ResultDetail />} />
